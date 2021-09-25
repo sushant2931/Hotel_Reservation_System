@@ -8,8 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class HotelReservationTest {
-
-
     @Test
     public void givenHotelDetails_WhenValuesEnteredAreCorrect_ShoulReturnTrue() {
 
@@ -84,11 +82,22 @@ public class HotelReservationTest {
         HotelReservationIF hotelReservation = new HotelReservation();
         hotelReservation.addHotel("Lakewood", 3, 110, 90, 80, 80);
         hotelReservation.addHotel("Bridgewood", 4, 150, 50, 110, 50);
+
         LocalDate startDate = LocalDate.of(2021, Month.SEPTEMBER, 11);
         LocalDate endDate = LocalDate.of(2021, Month.SEPTEMBER, 12);
-        ArrayList<Hotel> hotel = hotelReservation.getCheapestHotel("regular", startDate, endDate);
-        String hotelName = hotel.get(0).getHotelName() + " " + hotel.get(1).getHotelName();
-        Assert.assertEquals("Lakewood Bridgewood", hotelName);
+        String startDateToValidate = startDate.toString();
+        String endDateToValidate = endDate.toString();
+        boolean isValidStartDate = hotelReservation.validateDate(startDateToValidate);
+        boolean isValidEndDate = hotelReservation.validateDate(endDateToValidate);
+
+        if(isValidStartDate && isValidEndDate) {
+            ArrayList<Hotel> hotel = hotelReservation.getCheapestHotel("regular", startDate, endDate);
+            String hotelName = hotel.get(0).getHotelName() + " " + hotel.get(1).getHotelName();
+            Assert.assertEquals("Lakewood Bridgewood", hotelName);
+        }
+        else {
+            System.out.println("Not Valid Start Or End date");
+        }
     }
 
     @Test
@@ -97,10 +106,21 @@ public class HotelReservationTest {
         HotelReservationIF hotelReservation = new HotelReservation();
         hotelReservation.addHotel("Lakewood", 3, 110, 90, 80, 80);
         hotelReservation.addHotel("Bridgewood", 4, 150, 50, 110, 50);
+
         LocalDate startDate = LocalDate.of(2021, Month.SEPTEMBER, 11);
         LocalDate endDate = LocalDate.of(2021, Month.SEPTEMBER, 12);
-        Hotel hotel = hotelReservation.getCheapestBestRatedHotel("regular", startDate, endDate);
-        Assert.assertEquals("Bridgewood", hotel.getHotelName());
+        String startDateToValidate = startDate.toString();
+        String endDateToValidate = endDate.toString();
+        boolean isValidStartDate = hotelReservation.validateDate(startDateToValidate);
+        boolean isValidEndDate = hotelReservation.validateDate(endDateToValidate);
+
+        if(isValidStartDate && isValidEndDate) {
+            Hotel hotel = hotelReservation.getCheapestBestRatedHotel("regular", startDate, endDate);
+            Assert.assertEquals("Bridgewood", hotel.getHotelName());
+        }
+        else {
+            System.out.println("Not Valid Start Or End date");
+        }
     }
 
     @Test
@@ -110,10 +130,21 @@ public class HotelReservationTest {
         hotelReservation.addHotel("Lakewood", 3, 110, 90, 80, 80);
         hotelReservation.addHotel("Bridgewood", 4, 150, 50, 110, 50);
         hotelReservation.addHotel("Ridgewood", 5, 220, 150, 100, 40);
+
         LocalDate startDate = LocalDate.of(2021, Month.SEPTEMBER, 11);
         LocalDate endDate = LocalDate.of(2021, Month.SEPTEMBER, 12);
-        Hotel hotel = hotelReservation.getBestRatedHotel("regular", startDate, endDate);
-        Assert.assertEquals("Ridgewood", hotel.getHotelName());
+        String startDateToValidate = startDate.toString();
+        String endDateToValidate = endDate.toString();
+        boolean isValidStartDate = hotelReservation.validateDate(startDateToValidate);
+        boolean isValidEndDate = hotelReservation.validateDate(endDateToValidate);
+
+        if(isValidStartDate && isValidEndDate) {
+            Hotel hotel = hotelReservation.getBestRatedHotel("regular", startDate, endDate);
+            Assert.assertEquals("Ridgewood", hotel.getHotelName());
+        }
+        else {
+            System.out.println("Not Valid Start Or End date");
+        }
     }
 
     @Test
@@ -189,6 +220,75 @@ public class HotelReservationTest {
         }
         catch(HotelReservationException e){
             Assert.assertEquals(HotelReservationException.ExceptionType.ENTERED_EMPTY, e.type);
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void givenDate_WhenProper_ShouldReturnTrue() {
+
+        HotelReservation hotelReservation = new HotelReservation();
+        boolean isVAlid = hotelReservation.validateDate("2009-12-13");
+        Assert.assertTrue(isVAlid);
+    }
+
+    @Test
+    public void givenDate_WhenNotProperFormat_ShouldReturnFalse() {
+
+        HotelReservation hotelReservation = new HotelReservation();
+        boolean isNotVAlid = hotelReservation.validateDate("19-10-1999");
+        Assert.assertFalse(isNotVAlid);
+    }
+
+    @Test
+    public void givenDate_WhenSeperatedBySlashes_ShouldReturnFalse() {
+
+        HotelReservation hotelReservation = new HotelReservation();
+        boolean isNotVAlid = hotelReservation.validateDate("1999/09/2021");
+        Assert.assertFalse(isNotVAlid);
+    }
+
+    @Test
+    public void givenDate_WhenContainsCharcters_ShouldReturnFalse() {
+
+        HotelReservation hotelReservation = new HotelReservation();
+        boolean isNotVAlid = hotelReservation.validateDate("200s-a2-19");
+        Assert.assertFalse(isNotVAlid);
+    }
+
+    @Test
+    public void givenDate_WhenSpecialCharcters_ShouldReturnFalse() {
+
+        HotelReservation hotelReservation = new HotelReservation();
+        boolean isNotVAlid = hotelReservation.validateDate("2009/%%/13");
+        Assert.assertFalse(isNotVAlid);
+    }
+
+    @Test
+    public void givenDate_WhenNull_ShouldThrowHotelReservationException() {
+
+        HotelReservation hotelReservation = new HotelReservation();
+        try {
+            String date = null;
+            hotelReservation.validateDate(date);
+        }
+        catch(HotelReservationException e){
+            Assert.assertEquals(HotelReservationException.ExceptionType.ENTERED_NULL,e.type);
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void givenDate_WhenEmpty_ShouldThrowHotelReservationException() {
+
+        HotelReservation hotelReservation = new HotelReservation();
+        try {
+            String date = "";
+            hotelReservation.validateDate(date);
+        }
+        catch(HotelReservationException e){
+            Assert.assertEquals(HotelReservationException.ExceptionType.ENTERED_EMPTY,e.type);
             e.printStackTrace();
         }
     }
