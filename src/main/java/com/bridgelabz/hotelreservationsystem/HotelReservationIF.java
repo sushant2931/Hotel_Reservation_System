@@ -13,11 +13,11 @@ public interface HotelReservationIF {
 
     public ArrayList<Hotel> getHotelList();
 
-    public ArrayList<Hotel> getCheapestHotel(LocalDate startDate, LocalDate endDate);
+    public ArrayList<Hotel> getCheapestHotel(String regular, LocalDate startDate, LocalDate endDate);
 
-    public Hotel getCheapestBestRatedHotel(LocalDate startDate, LocalDate endDate);
+    public Hotel getCheapestBestRatedHotel(String regular, LocalDate startDate, LocalDate endDate);
 
-    public Hotel getBestRatedHotel(LocalDate startDate, LocalDate endDate);
+    public Hotel getBestRatedHotel(String regular, LocalDate startDate, LocalDate endDate);
 
     public ArrayList<Integer> getDurationOfStayDetails(LocalDate startDate, LocalDate endDate);
 }
